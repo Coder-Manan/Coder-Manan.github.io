@@ -11,3 +11,7 @@
 .content{
     display: block;
 }
+
+.task_input{
+    resize: vertical;
+}

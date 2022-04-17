@@ -9,9 +9,9 @@ function toggle(open){
     document.getElementById(open).style.display="block";
 }
 
-function addTask(){
-    alert("Add Task\nSelect date and time <input>");
 
+function addTask(){
+    document.getElementById("add").show();    
 }
 
 class Task {

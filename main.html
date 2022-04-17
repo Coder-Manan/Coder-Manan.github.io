@@ -20,7 +20,13 @@
     <div id="all">
       all text
       <div id="all_tasks">
-        <button onclick="addTask()"></button>
+        <button onclick="addTask()">+</button>
+        <dialog id="add">
+          Select date and time:
+          <input type="datetime-local" />
+          Task description:
+          <input type="text" class="task_input" />
+        </dialog>
       </div>
     </div>
     <div id="completed">completed text</div>
