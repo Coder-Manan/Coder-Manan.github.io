@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="./style.css" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <!--division containing buttons of a,c,m-->
+    <div class="tabs">
+      <ul>
+        <li><button onclick="toggle('all')">All</button></li>
+        <li><button onclick="toggle('completed')">Completed</button></li>
+        <li><button onclick="toggle('missed')">Missed</button></li>
+      </ul>
+    </div>
+    <!--now 3 divs, one each for each tab-->
+    <div id="all">all text</div>
+    <div id="completed">completed text</div>
+    <div id="missed">missed text</div>
+    <script src="./logic.js"></script>
+  </body>
+</html>

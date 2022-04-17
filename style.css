@@ -1,0 +1,11 @@
+.tabs > ul{
+    display: flex;
+    align-items: stretch;
+    justify-content: space-around;
+
+    /*float: left;*/
+}
+
+.tabs > ul > li {
+    display: block;
+}
