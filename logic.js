@@ -2,6 +2,10 @@
 functions to toggle b/w tabs
 */
 
+document.getElementById("all").style.display="none";
+document.getElementById("completed").style.display="none";    
+document.getElementById("missed").style.display="none";
+
 function toggle(open){
     document.getElementById("all").style.display="none";
     document.getElementById("completed").style.display="none";
@@ -19,6 +23,7 @@ function addFinal(){
         //do some work and close dialog
         if (document.getElementById("task_input").value!=""){
             alltasks.push(new Task(document.getElementById("task_input").value, d));
+            console.log(alltasks.length);        
             document.getElementById("add").close();
             document.getElementById("task_input").value="";
             document.getElementById("dt_input").value="";
@@ -45,24 +50,10 @@ function addTaskDialog(){
 }
 
 class Task {
-    no = 0;
-    static coll = [];
     constructor(desc, date_time) {
         this.desc = desc;
         this.due_date_time = date_time;
-        document.getElementById("all_tasks").innerHTML += `<button type="button" class="collapsible">${this.desc}    ${this.due_date} ${this.due_time}</button><div class="content">${this.desc}</div>`;
-        no++;
-        console.log(no);
-        coll = document.getElementsByClassName("collapsible");
-        coll[no - 1].addEventListener("click", function() {
-            this.classlist.toggle("active");
-            var content = this.nextElementSibling;
-            if (content.style.display=="block"){
-                content.style.display="none";
-            }
-            else{
-                content.style.display="block";
-            }
-        })
+        document.getElementById("all_tasks").innerHTML += `${this.desc}    ${this.due_date_time.toUTCString()}<button type="button">Add to Completed</button>`;
+        console.log(alltasks.length);        
     }
 }
