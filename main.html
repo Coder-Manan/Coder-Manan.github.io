@@ -8,29 +8,34 @@
     <title>Document</title>
   </head>
   <body>
-    <!--division containing buttons of a,c,m-->
-    <div class="tabs">
-      <ul>
-        <li><button onclick="toggle('all')">All</button></li>
-        <li><button onclick="toggle('completed')">Completed</button></li>
-        <li><button onclick="toggle('missed')">Missed</button></li>
-      </ul>
+    <div id="dialog">
+      <dialog id="add">
+        Select date and time:
+        <input type="datetime-local" id="dt_input" />
+        Task description:
+        <input type="text" id="task_input" />
+        <button onclick="addFinal()">Add</button>
+        <p id="dialog_error"></p>
+      </dialog>
     </div>
-    <!--now 3 divs, one each for each tab-->
-    <div id="all">
-      all text
-      <div id="all_tasks">
-        <button onclick="addTask()">+</button>
-        <dialog id="add">
-          Select date and time:
-          <input type="datetime-local" />
-          Task description:
-          <input type="text" class="task_input" />
-        </dialog>
+    <div id="body">
+      <!--division containing buttons of a,c,m-->
+      <div class="tabs">
+        <ul>
+          <li><button onclick="toggle('all')">All</button></li>
+          <li><button onclick="toggle('completed')">Completed</button></li>
+          <li><button onclick="toggle('missed')">Missed</button></li>
+        </ul>
       </div>
+      <!--now 3 divs, one each for each tab-->
+      <div id="all">
+        all text
+        <div id="all_tasks"></div>
+        <button onclick="addTaskDialog()">+</button>
+      </div>
+      <div id="completed">completed text</div>
+      <div id="missed">missed text</div>
+      <script src="./logic.js"></script>
     </div>
-    <div id="completed">completed text</div>
-    <div id="missed">missed text</div>
-    <script src="./logic.js"></script>
   </body>
 </html>
