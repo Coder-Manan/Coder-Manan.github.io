@@ -1,10 +1,14 @@
 /*
 functions to toggle b/w tabs
 */
-
+let today = new Date();
 document.getElementById("all").style.display="none";
 document.getElementById("completed").style.display="none";    
 document.getElementById("missed").style.display="none";
+
+function moveToComplete(){
+
+}
 
 function toggle(open){
     document.getElementById("all").style.display="none";
@@ -21,7 +25,8 @@ function addFinal(){
 	//if (Object.prototype.toString.call() === "[object Date]"){
     if (isNaN(d.getTime()) == false){
         //do some work and close dialog
-        if (document.getElementById("task_input").value!=""){
+        //compare with current date
+        if (document.getElementById("task_input").value!="" && d<(new Date)){
             alltasks.push(new Task(document.getElementById("task_input").value, d));
             console.log(alltasks.length);        
             document.getElementById("add").close();
@@ -53,7 +58,7 @@ class Task {
     constructor(desc, date_time) {
         this.desc = desc;
         this.due_date_time = date_time;
-        document.getElementById("all_tasks").innerHTML += `${this.desc}    ${this.due_date_time.toUTCString()}<button type="button">Add to Completed</button>`;
+        document.getElementById("all_tasks").innerHTML += `<div id="${gf}">${this.desc}    ${this.due_date_time.toUTCString()}<button type="button">Add to Completed</button></div>`;
         console.log(alltasks.length);        
     }
 }
