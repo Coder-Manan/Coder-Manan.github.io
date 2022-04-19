@@ -30,6 +30,7 @@ function addFinal(){
             document.getElementById("dt_input").value="";
             document.getElementById("dialog_error").innerHTML="";
             document.getElementById("body").style.display="block";
+            document.getElementById("all").innerHTML = `You have ${alltasks.length} pending task(s)<br>`+document.getElementById("all").innerHTML.slice(33);
             return 0;
         }
     }
@@ -49,5 +50,9 @@ class Task {
         this.due_date_time = date_time;
         document.getElementById("all_tasks").innerHTML += `<div>${this.desc} <br>due at ${this.due_date_time.toLocaleDateString()} ${this.due_date_time.toLocaleTimeString('en-IN')}<button type="button">Add to Completed</button></div>`;
         console.log(alltasks.length);        
+    }
+
+    reschedule(){
+
     }
 }
