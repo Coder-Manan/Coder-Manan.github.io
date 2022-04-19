@@ -19,10 +19,13 @@ function toggle(open){
 }
 
 function addFinal(){
-    d = new Date(document.getElementById("dt_input").value);
-    if (isNaN(d.getTime()) == false){
+    d = new Date(document.getElementById("add").childNodes[1].value);
+    if (isNaN(d.getTime())){
+        console.log(1);
+    }
+    else{
         console.log((new Date).toLocaleDateString())
-        if (document.getElementById("task_input").value!="" && d>(new Date)){
+        if (document.getElementById("task_input").value!="" && (d>(new Date) || d.getHours()>(new Date).getHours() || d.getMinutes()>(new Date).getMinutes())){
             alltasks.push(new Task(document.getElementById("task_input").value, d));
             console.log(alltasks.length);        
             document.getElementById("add").close();
@@ -33,6 +36,7 @@ function addFinal(){
             document.getElementById("all").innerHTML = `You have ${alltasks.length} pending task(s)<br>`+document.getElementById("all").innerHTML.slice(33);
             return 0;
         }
+        console.log(2);
     }
     document.getElementById("dialog_error").innerHTML="Invalid Data. Enter again";
 }
@@ -44,15 +48,17 @@ function addTaskDialog(){
 
 }
 
+function reschedule(x){
+    console.log('9');
+}
+
 class Task {
     constructor(desc, date_time) {
         this.desc = desc;
         this.due_date_time = date_time;
-        document.getElementById("all_tasks").innerHTML += `<div>${this.desc} <br>due at ${this.due_date_time.toLocaleDateString()} ${this.due_date_time.toLocaleTimeString('en-IN')}<button type="button">Add to Completed</button></div>`;
+        document.getElementById("all_tasks").innerHTML += `<div>${this.desc} <br>due at ${this.due_date_time.toLocaleDateString()} ${this.due_date_time.toLocaleTimeString('en-IN')}<button type="button">Add to Completed</button><button onclick=${reschedule(this)} >Reschedule</button></div>`;
         console.log(alltasks.length);        
     }
-
-    reschedule(){
-
-    }
+    
+    
 }
