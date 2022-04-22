@@ -1,20 +1,22 @@
 document.getElementById("all").style.display="none";
 document.getElementById("completed").style.display="none";    
 document.getElementById("missed").style.display="none";
+
 const firebaseConfig = {
     apiKey: "AIzaSyDo-fp_VBZcxFu5yYJEKAS0AhA3vTxElqE",
     authDomain: "js-todo-b1146.firebaseapp.com",
+    databaseURL: "https://js-todo-b1146-default-rtdb.firebaseio.com",
     projectId: "js-todo-b1146",
     storageBucket: "js-todo-b1146.appspot.com",
     messagingSenderId: "991444055494",
-    appId: "1:991444055494:web:1fbb4cf0492d6c77fbaec7"
+    appId: "1:991444055494:web:6192b2f6db828387fbaec7"
 };
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+const app = firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 var alltasks = [];
 var completedtasks = [];
 var missedtasks = [];
-const n = 0;
+let n = 0;
 document.getElementById("all").innerHTML = `You have ${alltasks.length} pending task(s)<br>`+document.getElementById("all").innerHTML;
 
 function moveToComplete(){
@@ -27,13 +29,21 @@ function toggle(open){
     document.getElementById("missed").style.display="none";
     document.getElementById(open).style.display="block";
 }
-function writeUserData(task_id, date_time, description) {
+function writeUserData(description, date_time) {
+
+    // firebase.setDoc(doc(db, "all_tasks", `${task_id}`), {
+    //     desc: description,
+    //     due_date_time: date_time
+    //   });
     //let app = initializeApp(firebaseConfig);
-    let db = getDatabase(app);
-    db.collection("alltasks").add({
+    db.collection(`alltasks/`).add({
         desc: description,
         due_date_time: date_time
-    }).then((docRef)=>{console.log("written with id: ", docRef.id);})
+    }).then((docRef)=>{
+        console.log("written with id: ", docRef.id);
+        n++;
+        alltasks.concat([docRef.id]);
+        document.getElementById("all").innerHTML = `You have ${n} pending task(s)<br>`+document.getElementById("all").innerHTML.slice(33);})
     .catch((error)=>{console.log("error while writing: ", error);});
     // set(ref(db, `alltasks/${task_id}`), {
     //   desc: description,
@@ -71,14 +81,22 @@ function addTaskToDB(){
         if (document.getElementById("task_input").value!="" && (d>(new Date) || d.getHours()>(new Date).getHours() || d.getMinutes()>(new Date).getMinutes())){
             //alltasks.push(new Task(document.getElementById("task_input").value, d));
             //console.log(alltasks.length);        
-            writeUserData("test successful", `${document.getElementById("task_input").value}`, `${d.toUTCString()}`);
-            n++;
-            document.getElementById("add").close();
-            document.getElementById("task_input").value="";
-            document.getElementById("dt_input").value="";
-            document.getElementById("dialog_error").innerHTML="";
-            document.getElementById("body").style.display="block";
-            document.getElementById("all").innerHTML = `You have ${alltasks.length} pending task(s)<br>`+document.getElementById("all").innerHTML.slice(33);
+            db.collection(`alltasks/`).add({
+                desc: `${document.getElementById("task_input").value}`,
+                due_date_time: `${d.toUTCString()}`
+            }).then((docRef)=>{
+                console.log("written with id: ", docRef.id);
+                n++;
+                alltasks = alltasks.concat(`${[docRef.id]}`);
+                console.log(alltasks);
+                document.getElementById
+                document.getElementById("all").innerHTML = `You have ${n} pending task(s)<br>`+document.getElementById("all").innerHTML.slice(33);
+                document.getElementById("add").close();
+                document.getElementById("task_input").value="";
+                document.getElementById("dt_input").value="";
+                document.getElementById("dialog_error").innerHTML="";
+                document.getElementById("body").style.display="block";})
+            .catch((error)=>{console.log("error while writing: ", error);});
             return 0;
         }
         console.log(2);
