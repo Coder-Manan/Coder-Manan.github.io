@@ -1,7 +1,6 @@
 document.getElementById("all").style.display="none";
 document.getElementById("completed").style.display="none";    
 document.getElementById("missed").style.display="none";
-
 const firebaseConfig = {
     apiKey: "AIzaSyDo-fp_VBZcxFu5yYJEKAS0AhA3vTxElqE",
     authDomain: "js-todo-b1146.firebaseapp.com",
@@ -17,7 +16,10 @@ var alltasks = [];
 var completedtasks = [];
 var missedtasks = [];
 let n = 0;
-document.getElementById("all").innerHTML = `You have ${alltasks.length} pending task(s)<br>`+document.getElementById("all").innerHTML;
+document.getElementById("all").innerHTML = `You have ${n} pending task(s)<br>`+document.getElementById("all").innerHTML;
+
+let ref = firebase.firestore().collection(db, "alltasks");
+
 
 function moveToComplete(){
 
@@ -37,7 +39,7 @@ function writeUserData(description, date_time) {
         console.log("written with id: ", docRef.id);
         n++;
         alltasks.concat([docRef.id]);
-        document.getElementById("all").innerHTML = `You have ${n} pending task(s)<br>`+document.getElementById("all").innerHTML.slice(33);})
+    })
     .catch((error)=>{console.log("error while writing: ", error);});
   }
 function addTaskToDB(){
@@ -81,7 +83,6 @@ function addTaskToDB(){
                 n++;
                 alltasks = alltasks.concat(`${[docRef.id]}`);
                 console.log(alltasks);
-                document.getElementById
                 document.getElementById("all").innerHTML = `You have ${n} pending task(s)<br>`+document.getElementById("all").innerHTML.slice(33);
                 document.getElementById("task_input").value="";
                 document.getElementById("dt_input").value="";
