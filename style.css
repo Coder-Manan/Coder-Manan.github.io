@@ -15,3 +15,7 @@
 .task_input{
     resize: vertical;
 }
+
+.centered {
+    display: none;
+}

@@ -30,12 +30,6 @@ function toggle(open){
     document.getElementById(open).style.display="block";
 }
 function writeUserData(description, date_time) {
-
-    // firebase.setDoc(doc(db, "all_tasks", `${task_id}`), {
-    //     desc: description,
-    //     due_date_time: date_time
-    //   });
-    //let app = initializeApp(firebaseConfig);
     db.collection(`alltasks/`).add({
         desc: description,
         due_date_time: date_time
@@ -45,10 +39,6 @@ function writeUserData(description, date_time) {
         alltasks.concat([docRef.id]);
         document.getElementById("all").innerHTML = `You have ${n} pending task(s)<br>`+document.getElementById("all").innerHTML.slice(33);})
     .catch((error)=>{console.log("error while writing: ", error);});
-    // set(ref(db, `alltasks/${task_id}`), {
-    //   desc: description,
-    //   due_date_time: date_time,
-    // })
   }
 function addTaskToDB(){
     // d = new Date(document.getElementById("add").childNodes[1].value);
@@ -80,7 +70,9 @@ function addTaskToDB(){
         console.log((new Date).toLocaleDateString())
         if (document.getElementById("task_input").value!="" && (d>(new Date) || d.getHours()>(new Date).getHours() || d.getMinutes()>(new Date).getMinutes())){
             //alltasks.push(new Task(document.getElementById("task_input").value, d));
-            //console.log(alltasks.length);        
+            //console.log(alltasks.length);
+            document.getElementById("add").close();
+            document.getElementById("loading").style.display="block";        
             db.collection(`alltasks/`).add({
                 desc: `${document.getElementById("task_input").value}`,
                 due_date_time: `${d.toUTCString()}`
@@ -91,10 +83,10 @@ function addTaskToDB(){
                 console.log(alltasks);
                 document.getElementById
                 document.getElementById("all").innerHTML = `You have ${n} pending task(s)<br>`+document.getElementById("all").innerHTML.slice(33);
-                document.getElementById("add").close();
                 document.getElementById("task_input").value="";
                 document.getElementById("dt_input").value="";
                 document.getElementById("dialog_error").innerHTML="";
+                document.getElementById("loading").style.display="none";        
                 document.getElementById("body").style.display="block";})
             .catch((error)=>{console.log("error while writing: ", error);});
             return 0;
