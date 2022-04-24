@@ -21,6 +21,8 @@ let n = 0;
 document.getElementById("all").innerHTML = `<h1>All Tasks Tab</h1><br>`+document.getElementById("all").innerHTML;
 let taskstring = "";
 getalltasks();
+getmissedtasks();
+getcompletedtasks();
 //document.getElementById("all_tasks").innerHTML=getalltasks();
 // firebase.onValue(ref(db, 'alltasks'), (snapshot) => {
 //     snapshot.forEach((Childsnapshot) =>{ justtasks.push(Childsnapshot.val())});
@@ -71,7 +73,7 @@ function getalltasks(){
         alltasks.forEach((item)=>{console.log(item.desc);})
         document.getElementById("all").childNodes[5].innerHTML="";
         alltasks.forEach((item)=>{document.getElementById("all").childNodes[5].innerHTML+=(`<div id="${item.id}_div">${alltasks.indexOf(item)+1}.&nbsp;${item._delegate._document.data.value.mapValue.fields.desc.stringValue} due at ${item._delegate._document.data.value.mapValue.fields.due_date_time.stringValue}<br><button id="${item.id}_reschedule" onclick="reschedule(${item.id})">Reschedule this task</button><br></div>`);});
-        addToDiv();
+        //addToDivAll();
     });
     
     // 
@@ -92,11 +94,65 @@ function getalltasks(){
     // });
 }
 
-function addToDiv(){
+function getmissedtasks(){
+    db.collection("missedtasks").get().then(function(querySnapshot) {
+        x = querySnapshot.docs;
+        console.log(x);
+        document.getElementById("body").style.display="block";        
+        document.getElementById("loading").style.display="none";
+        x.forEach((it) => {docRef = db.collection("missedtasks").doc(it.id).get().then((doc)=>{missedtasks[x.indexOf(it)]=doc.data();Object.defineProperty(x[x.indexOf(it)], "id", {value: it.id})})});
+        console.log(x);
+        missedtasks=x;
+        console.log(missedtasks);
+        missedtasks.forEach((item)=>{console.log(item.desc);})
+        document.getElementById("missed").innerHTML="";
+        missedtasks.forEach((item)=>{document.getElementById("missed").innerHTML+=(`<div id="${item.id}_div">${missedtasks.indexOf(item)+1}.&nbsp;${item._delegate._document.data.value.mapValue.fields.desc.stringValue} was due at ${item._delegate._document.data.value.mapValue.fields.due_date_time.stringValue}<br><button id="${item.id}_reschedule" onclick="reschedule(${item.id})">Reschedule this task</button><br></div>`);});
+        //addToDivMissed();
+    });
+}
+
+function getcompletedtasks(){
+    db.collection("completedtasks").get().then(function(querySnapshot) {
+        x = querySnapshot.docs;
+        console.log(x);
+        document.getElementById("body").style.display="block";        
+        document.getElementById("loading").style.display="none";
+        x.forEach((it) => {docRef = db.collection("completedtasks").doc(it.id).get().then((doc)=>{completedtasks[x.indexOf(it)]=doc.data();Object.defineProperty(x[x.indexOf(it)], "id", {value: it.id})})});
+        console.log(x);
+        completedtasks=x;
+        console.log(completedtasks);
+        completedtasks.forEach((item)=>{console.log(item.desc);})
+        document.getElementById("completed").innerHTML="";
+        completedtasks.forEach((item)=>{document.getElementById("completed").innerHTML+=(`<div id="${item.id}_div">${completedtasks.indexOf(item)+1}.&nbsp;${item._delegate._document.data.value.mapValue.fields.desc.stringValue} was due at ${item._delegate._document.data.value.mapValue.fields.due_date_time.stringValue}<br><br></div>`);});
+        //addToDivCompleted();
+    });
+}
+
+function addToDivAll(){
     console.log(alltasks);
     let l = alltasks.length;
     for (let index = 0; index < l; index++) {
         console.log(alltasks[index]._delegate._document.data.value.mapValue.fields.desc.stringValue);
+        
+    }
+    //alltasks.forEach((y)=>{console.log(y.desc);})
+}
+
+function addToDivMissed(){
+    console.log(missedtasks);
+    let l = missedtasks.length;
+    for (let index = 0; index < l; index++) {
+        console.log(missedtasks[index]._delegate._document.data.value.mapValue.fields.desc.stringValue);
+        
+    }
+    //alltasks.forEach((y)=>{console.log(y.desc);})
+}
+
+function addToDivCompleted(){
+    console.log(completedtasks);
+    let l = completedtasks.length;
+    for (let index = 0; index < l; index++) {
+        console.log(completedtasks[index]._delegate._document.data.value.mapValue.fields.desc.stringValue);
         
     }
     //alltasks.forEach((y)=>{console.log(y.desc);})
