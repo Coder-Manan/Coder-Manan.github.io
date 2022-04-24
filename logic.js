@@ -18,7 +18,7 @@ var completedtasks = [];
 var missedtasks = [];
 var justtasks = [];
 let n = 0;
-document.getElementById("all").innerHTML = `You have ${n} pending task(s)<br>`+document.getElementById("all").innerHTML;
+document.getElementById("all").innerHTML = `<h1>All Tasks Tab</h1><br>`+document.getElementById("all").innerHTML;
 let taskstring = "";
 getalltasks();
 //document.getElementById("all_tasks").innerHTML=getalltasks();
@@ -44,6 +44,13 @@ function moveToComplete(){
 
 };
 
+function reschedule(id){
+    document.getElementById("body").style.display="none";
+    console.log("donehere");
+    document.getElementById("reschedule").show();
+    document.getElementById("reschedule_task_desc").innerHTML=`${(alltasks.find(x=>{x.id===id})).desc}`;
+}
+
 function getalltasks(){
     document.getElementById("body").style.display="none";        
     document.getElementById("loading").style.display="block";
@@ -57,15 +64,13 @@ function getalltasks(){
         console.log(x);
         document.getElementById("body").style.display="block";        
         document.getElementById("loading").style.display="none";
-        x.forEach((it) => {docRef = db.collection("alltasks").doc(it.id).get().then((doc)=>{x[x.indexOf(it)]=doc.data()})});
-        console.log("reached");
+        x.forEach((it) => {docRef = db.collection("alltasks").doc(it.id).get().then((doc)=>{alltasks[x.indexOf(it)]=doc.data();Object.defineProperty(x[x.indexOf(it)], "id", {value: it.id})})});
         console.log(x);
         alltasks=x;
         console.log(alltasks);
         alltasks.forEach((item)=>{console.log(item.desc);})
-        alltasks.forEach((item)=>{document.getElementById("all").childNodes[5].innerHTML+=(`${item.desc} due at ${item.due_date_time}<br>`);console.log(item.desc);});
-        console.log("done");
-        console.log(str);
+        document.getElementById("all").childNodes[5].innerHTML="";
+        alltasks.forEach((item)=>{document.getElementById("all").childNodes[5].innerHTML+=(`<div id="${item.id}_div">${alltasks.indexOf(item)+1}.&nbsp;${item._delegate._document.data.value.mapValue.fields.desc.stringValue} due at ${item._delegate._document.data.value.mapValue.fields.due_date_time.stringValue}<br><button id="${item.id}_reschedule" onclick="reschedule(${item.id})">Reschedule this task</button><br></div>`);});
         addToDiv();
     });
     
@@ -89,8 +94,12 @@ function getalltasks(){
 
 function addToDiv(){
     console.log(alltasks);
-    console.log(alltasks[0].desc);
-    alltasks.forEach((item)=>{console.log(typeof item);console.log(item);console.log(item.desc)})
+    let l = alltasks.length;
+    for (let index = 0; index < l; index++) {
+        console.log(alltasks[index]._delegate._document.data.value.mapValue.fields.desc.stringValue);
+        
+    }
+    //alltasks.forEach((y)=>{console.log(y.desc);})
 }
 
 function toggle(open){
@@ -152,7 +161,10 @@ function addTaskToDB(){
                 alltasks = alltasks.concat(`${[docRef.id]}`);
                 console.log(alltasks);
                 console.log(document.getElementById("all").innerHTML);
-                document.getElementById("all").innerHTML = `You have ${n} pending task(s)<br>`+document.getElementById("all").innerHTML.slice(33)+`<br><br><div id="${docRef.id}">${alltasks.findIndex(x => x===docRef.id) + 1}.&nbsp;${document.getElementById("task_input").value} due&nbsp;at&nbsp;${d.toUTCString()}</div>`;
+                document.getElementById("body").style.display="none";
+                document.getElementById("loading").style.display="block";
+                getalltasks().then(() =>{document.getElementById("body").style.display="block";document.getElementById("loading").style.display="none";});
+                //document.getElementById("all").innerHTML = `You have ${n} pending task(s)<br>`+document.getElementById("all").innerHTML.slice(33)+`<br><br><div id=${docRef.id}>${alltasks.findIndex(x => x===docRef.id) + 1}.&nbsp;${document.getElementById("task_input").value} due&nbsp;at&nbsp;${d.toUTCString()}</div>`;
                 console.log(document.getElementById("all").innerHTML);
                 document.getElementById("task_input").value="";
                 document.getElementById("dt_input").value="";
@@ -174,10 +186,7 @@ function addTaskDialog(){
 
 }
 
-function reschedule(x){
-    //load dialog box, input date and update due_date_time of reqd object
-    console.log('9');
-}
+
 
 class Task {
     constructor(desc, date_time) {
