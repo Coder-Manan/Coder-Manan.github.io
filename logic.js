@@ -14,6 +14,7 @@ const app = firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const ref = db.ref;
 var alltasks = [];
+var allids=[];
 var completedtasks = [];
 var missedtasks = [];
 var justtasks = [];
@@ -48,33 +49,48 @@ function moveToComplete(){
 
 function reschedule(id){
     document.getElementById("body").style.display="none";
-    console.log("donehere");
     document.getElementById("reschedule").show();
-    document.getElementById("reschedule_task_desc").innerHTML=`${(alltasks.find(x=>{x.id===id})).desc}`;
+    obj = alltasks.find(x=>(x.id===id));
+    //document.getElementById("reschedule_dt").innerHTML=obj._delegate._document.data.value.mapValue.fields.due_date_time.stringValue;
+    document.getElementById("reschedule_task_desc").innerHTML=obj._delegate._document.data.value.mapValue.fields.desc.stringValue;
+    document.getElementById("reschedule_confirm_button").innerHTML=`<button onclick="reschedule_confirm('${id}')">Confirm</button>`;
+}
+
+function reschedule_confirm(id){
+    console.log("reacged reschedule confirm")
+    d = new Date(document.getElementById("reschedule_dt_input").value);
+    if (isNaN(d.getTime())){
+        console.log(1);
+    }
+    else if ((d>(new Date) || d.getHours()>(new Date).getHours() || d.getMinutes()>(new Date).getMinutes())){
+        document.getElementById("reschedule").close();
+        document.getElementById("loading").style.display="block";
+        db.collection("alltasks").doc(`${id}`).update({"due_date_time": d.toLocaleString()}).then(()=>{document.getElementById("loading").style.display="none";document.getElementById("body").style.display="block"}).catch((error)=>{alert("Error has occurred... Contact Mono")});
+        getalltasks().then(()=>{document.getElementById("loading").style.display="none";document.getElementById("body").style.display="block"})
+    }
 }
 
 function getalltasks(){
     document.getElementById("body").style.display="none";        
     document.getElementById("loading").style.display="block";
     let str = "";
-
+    let x=[];
     console.log("started");
-    let x = [];
         console.log("milstone1");
     db.collection("alltasks").get().then(function(querySnapshot) {
         x = querySnapshot.docs;
         console.log(x);
         document.getElementById("body").style.display="block";        
         document.getElementById("loading").style.display="none";
-        x.forEach((it) => {docRef = db.collection("alltasks").doc(it.id).get().then((doc)=>{alltasks[x.indexOf(it)]=doc.data();Object.defineProperty(x[x.indexOf(it)], "id", {value: it.id})})});
+        x.forEach((it) => {docRef = db.collection("alltasks").doc(it.id).get().then((doc)=>{alltasks.concat[doc.data()];alltasks[x.indexOf(it)].id=it.id})});
         console.log(x);
         alltasks=x;
         console.log(alltasks);
         alltasks.forEach((item)=>{console.log(item.desc);})
         document.getElementById("all").childNodes[5].innerHTML="";
-        alltasks.forEach((item)=>{document.getElementById("all").childNodes[5].innerHTML+=(`<div id="${item.id}_div">${alltasks.indexOf(item)+1}.&nbsp;${item._delegate._document.data.value.mapValue.fields.desc.stringValue} due at ${item._delegate._document.data.value.mapValue.fields.due_date_time.stringValue}<br><button id="${item.id}_reschedule" onclick="reschedule(${item.id})">Reschedule this task</button><br></div>`);});
+        alltasks.forEach((item)=>{document.getElementById("all").childNodes[5].innerHTML+=(`<div id="${item.id}_div">${alltasks.indexOf(item)+1}.&nbsp;${item._delegate._document.data.value.mapValue.fields.desc.stringValue}<div>due at ${item._delegate._document.data.value.mapValue.fields.due_date_time.stringValue}</div><button onclick="reschedule('${item.id}')">Reschedule this task</button><br></div><br>`);});
         //addToDivAll();
-    });
+    }).catch((error)=>{alert("Error has occurred.... Contact Mono")});
     
     // 
     // db.collection("alltasks").get().then(function(querySnapshot) {      
@@ -198,6 +214,7 @@ function addTaskToDB(){
     // }
     // document.getElementById("dialog_error").innerHTML="Invalid Data. Enter again";
     d = new Date(document.getElementById("add").childNodes[1].value);
+    console.log(d);
     if (isNaN(d.getTime())){
         console.log(1);
     }
@@ -210,7 +227,7 @@ function addTaskToDB(){
             document.getElementById("loading").style.display="block";        
             db.collection(`alltasks/`).add({
                 desc: `${document.getElementById("task_input").value}`,
-                due_date_time: `${d.toUTCString()}`
+                due_date_time: `${d.toLocaleString()}`
             }).then((docRef)=>{
                 console.log("written with id: ", docRef.id);
                 n++;

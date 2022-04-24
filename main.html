@@ -16,11 +16,11 @@
     <div id="dialog">
       <dialog id="reschedule">
         Select new date and time:
-        <input type="datetime-local" id="dt_input" /><!--put its value = original date and time in js-->
+        <input type="datetime-local" id="reschedule_dt_input" /><br><!--put its value = original date and time in js-->
         Task Description: <div id="reschedule_task_desc"></div><!-- change innerHTML value to desc of required task-->
-        <button id="">Confirm new due date and time</button><!--change onclick property to run method of reqd object-->
+        Original due date and time:  <div id="reschedule_dt"></div>
+        <div id="reschedule_confirm_button"></div><!--change onclick property to run method of reqd object-->
         <br>
-        Task description:        <!--add task desc using js-->
       </dialog>
       <dialog id="add">
         Select date and time:
