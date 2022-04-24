@@ -53,11 +53,11 @@ function reschedule(id){
     obj = alltasks.find(x=>(x.id===id));
     //document.getElementById("reschedule_dt").innerHTML=obj._delegate._document.data.value.mapValue.fields.due_date_time.stringValue;
     document.getElementById("reschedule_task_desc").innerHTML=obj._delegate._document.data.value.mapValue.fields.desc.stringValue;
+    document.getElementById("reschedule_dt").innerHTML=obj._delegate._document.data.value.mapValue.fields.due_date_time.stringValue;
     document.getElementById("reschedule_confirm_button").innerHTML=`<button onclick="reschedule_confirm('${id}')">Confirm</button>`;
 }
 
 function reschedule_confirm(id){
-    console.log("reacged reschedule confirm")
     d = new Date(document.getElementById("reschedule_dt_input").value);
     if (isNaN(d.getTime())){
         console.log(1);
@@ -66,8 +66,9 @@ function reschedule_confirm(id){
         document.getElementById("reschedule").close();
         document.getElementById("loading").style.display="block";
         db.collection("alltasks").doc(`${id}`).update({"due_date_time": d.toLocaleString()}).then(()=>{document.getElementById("loading").style.display="none";document.getElementById("body").style.display="block"}).catch((error)=>{alert("Error has occurred... Contact Mono")});
-        getalltasks().then(()=>{document.getElementById("loading").style.display="none";document.getElementById("body").style.display="block"})
+        getalltasks().then(()=>{document.getElementById("loading").style.display="none";document.getElementById("body").style.display="block";return;})
     }
+    alert("Enter valid date");
 }
 
 function getalltasks(){
