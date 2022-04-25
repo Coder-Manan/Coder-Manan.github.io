@@ -16,10 +16,10 @@
     <div id="dialog">
       <dialog id="reschedule">
         Select new date and time:
-        <input type="datetime-local" id="reschedule_dt_input" /><br><!--put its value = original date and time in js-->
-        Task Description: <div id="reschedule_task_desc"></div><!-- change innerHTML value to desc of required task-->
+        <input type="datetime-local" id="reschedule_dt_input" /><br>
+        Task Description: <div id="reschedule_task_desc"></div>
         Original due date and time:  <div id="reschedule_dt"></div>
-        <div id="reschedule_confirm_button"></div><!--change onclick property to run method of reqd object-->
+        <div id="reschedule_confirm_button"></div>
         <br>
       </dialog>
       <dialog id="add">
@@ -32,7 +32,6 @@
       </dialog>
     </div>
     <div id="body">
-      <!--division containing buttons of a,c,m-->
       <div class="tabs">
         <ul>
           <li><button onclick="toggle('all')">All</button></li>
@@ -40,13 +39,22 @@
           <li><button onclick="toggle('missed')">Missed</button></li>
         </ul>
       </div>
-      <!--now 3 divs, one each for each tab-->
       <div id="all">
+        <h1>All Tasks Tab</h1><br>
         <button onclick="addTaskDialog()">Add Task</button>
         <div id="all_tasks"></div>
       </div>
-      <div id="completed">completed text</div>
-      <div id="missed">missed text</div>
+      <div id="completed">
+        <h1>Completed Tasks Tab</h1><br>
+        <div id="completed_tasks"></div>
+      </div>
+      <div id="missed">
+        <h1>Missed Tasks Tab</h1><br>
+        <div id="missed_tasks"></div>
+      </div>
+    </div>
+    <div class="developer_info">
+      Made by: <h2>Manan Garg</h2>
     </div>
     <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore-compat.js"></script>

@@ -19,3 +19,8 @@
 .centered {
     display: none;
 }
+
+.developer_info {
+    position: absolute;
+    bottom: 0;
+}
