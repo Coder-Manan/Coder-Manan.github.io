@@ -64,6 +64,24 @@ function moveToMissed(id){
     }).then(()=>{db.collection("alltasks").doc(`${id}`).delete().then(()=>{document.getElementById("body").style.display="block";document.getElementById("loading").style.display="none";getalltasks();getmissedtasks();}).catch((error)=>{alert("error");console.log(error);})}).catch((error)=>{alert("error");console.log(error);})
 };
 
+function moveToAll(id){
+    d = new Date(document.getElementById("reschedule_dt_input").value);
+    if (isNaN(d.getTime())){
+        console.log(1);
+    }
+    else if ((d>(new Date) || d.getHours()>(new Date).getHours() || d.getMinutes()>(new Date).getMinutes())){
+        obj = missedtasks.find(x=>(x.id===id));
+        document.getElementById("reschedule").close();
+        document.getElementById("loading").style.display="block";
+        db.collection("alltasks").doc(`${id}`).set({
+            desc: obj._delegate._document.data.value.mapValue.fields.desc.stringValue,
+            due_date_time: obj._delegate._document.data.value.mapValue.fields.due_date_time.stringValue 
+        }).then(()=>{db.collection("missedtasks").doc(`${id}`).delete().then(()=>{getalltasks();getmissedtasks();document.getElementById("loading").style.display="none";document.getElementById("body").style.display="block";return;})})  
+    }
+    else{    alert("Enter valid date");
+}
+}
+
 function reschedule(id){
     document.getElementById("body").style.display="none";
     document.getElementById("reschedule").show();
@@ -72,6 +90,16 @@ function reschedule(id){
     document.getElementById("reschedule_task_desc").innerHTML=obj._delegate._document.data.value.mapValue.fields.desc.stringValue;
     document.getElementById("reschedule_dt").innerHTML=obj._delegate._document.data.value.mapValue.fields.due_date_time.stringValue;
     document.getElementById("reschedule_confirm_button").innerHTML=`<button onclick="reschedule_confirm('${id}')">Confirm</button>`;
+}
+
+function rescheduleToAll(id){
+    document.getElementById("body").style.display="none";
+    document.getElementById("reschedule").show();
+    obj = missedtasks.find(x=>(x.id===id));
+    //document.getElementById("reschedule_dt").innerHTML=obj._delegate._document.data.value.mapValue.fields.due_date_time.stringValue;
+    document.getElementById("reschedule_task_desc").innerHTML=obj._delegate._document.data.value.mapValue.fields.desc.stringValue;
+    document.getElementById("reschedule_dt").innerHTML=obj._delegate._document.data.value.mapValue.fields.due_date_time.stringValue;
+    document.getElementById("reschedule_confirm_button").innerHTML=`<button onclick="moveToAll('${id}')">Confirm</button>`;
 }
 
 function reschedule_confirm(id){
@@ -100,7 +128,7 @@ function getalltasks(){
         console.log(x);
         document.getElementById("body").style.display="block";        
         document.getElementById("loading").style.display="none";
-        x.forEach((it) => {docRef = db.collection("alltasks").doc(it.id).get().then((doc)=>{alltasks.concat[doc.data()];alltasks[x.indexOf(it)].id=it.id})});
+        x.forEach((it) => {docRef = db.collection("alltasks").doc(it.id).get().then((doc)=>{alltasks.concat[doc.data()];alltasks[x.indexOf(it)].id=it.id}).catch((error)=>{alert("Error");console.log(error);})});
         console.log(x);
         alltasks=x;
         console.log(alltasks);
@@ -140,7 +168,7 @@ function getmissedtasks(){
         console.log(missedtasks);
         missedtasks.forEach((item)=>{console.log(item.desc);})
         document.getElementById("missed").innerHTML="";
-        missedtasks.forEach((item)=>{document.getElementById("missed").innerHTML+=(`<div id="${item.id}_div">${missedtasks.indexOf(item)+1}.&nbsp;${item._delegate._document.data.value.mapValue.fields.desc.stringValue} was due at ${item._delegate._document.data.value.mapValue.fields.due_date_time.stringValue}<br><button id="${item.id}_reschedule" onclick="reschedule(${item.id})">Reschedule and move to pending</button><br></div>`);});
+        missedtasks.forEach((item)=>{document.getElementById("missed").innerHTML+=(`<div id="${item.id}_div">${missedtasks.indexOf(item)+1}.&nbsp;${item._delegate._document.data.value.mapValue.fields.desc.stringValue} was due at ${item._delegate._document.data.value.mapValue.fields.due_date_time.stringValue}<br><button id="${item.id}_reschedule" onclick="rescheduleToAll('${item.id}')">Reschedule and move to pending</button><br></div>`);});
         //addToDivMissed();
     });
 }
