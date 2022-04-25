@@ -43,13 +43,29 @@ var docRef = db.collection("alltasks");
 // }).catch((error) => {
 //     console.log("Error getting document:", error);
 // });
-function moveToComplete(){
+function moveToComplete(id){
+    obj = alltasks.find(x=>(x.id===id));
+    document.getElementById("body").style.display="none";
+    document.getElementById("loading").style.display="block";
+    db.collection("completedtasks").doc(`${id}`).set({
+        desc:obj._delegate._document.data.value.mapValue.fields.desc.stringValue,
+        due_date_time:obj._delegate._document.data.value.mapValue.fields.due_date_time.stringValue,
+        completed_date_time: (new Date).toLocaleString()
+    }).then(()=>{db.collection("alltasks").doc(`${id}`).delete().then(()=>{document.getElementById("body").style.display="block";document.getElementById("loading").style.display="none";getalltasks();getcompletedtasks();}).catch((error)=>{alert("error");console.log(error);})}).catch((error)=>{alert("error");console.log(error);})
+};
 
+function moveToMissed(id){
+    obj = alltasks.find(x=>(x.id===id));
+    document.getElementById("body").style.display="none";
+    document.getElementById("loading").style.display="block";
+    db.collection("missedtasks").doc(`${id}`).set({
+        desc:obj._delegate._document.data.value.mapValue.fields.desc.stringValue,
+        due_date_time:obj._delegate._document.data.value.mapValue.fields.due_date_time.stringValue,
+    }).then(()=>{db.collection("alltasks").doc(`${id}`).delete().then(()=>{document.getElementById("body").style.display="block";document.getElementById("loading").style.display="none";getalltasks();getmissedtasks();}).catch((error)=>{alert("error");console.log(error);})}).catch((error)=>{alert("error");console.log(error);})
 };
 
 function reschedule(id){
     document.getElementById("body").style.display="none";
-    document.getElementById("type").innerHTML = "<h3>Rescheduling Pending Task</h3>";
     document.getElementById("reschedule").show();
     obj = alltasks.find(x=>(x.id===id));
     //document.getElementById("reschedule_dt").innerHTML=obj._delegate._document.data.value.mapValue.fields.due_date_time.stringValue;
@@ -57,20 +73,7 @@ function reschedule(id){
     document.getElementById("reschedule_dt").innerHTML=obj._delegate._document.data.value.mapValue.fields.due_date_time.stringValue;
     document.getElementById("reschedule_confirm_button").innerHTML=`<button onclick="reschedule_confirm('${id}')">Confirm</button>`;
 }
-function rescheduleToAll(id){
-    document.getElementById("body").style.display="none";
-    document.getElementById("type").innerHTML = "<h3>Rescheduling Missed Task</h3>";
-    document.getElementById("reschedule").show();
-    obj = alltasks.find(x=>(x.id===id));
-    db.collection("alltasks").doc(`${id}`).set({
-        desc:
-        due_date
-    })
-    //document.getElementById("reschedule_dt").innerHTML=obj._delegate._document.data.value.mapValue.fields.due_date_time.stringValue;
-    document.getElementById("reschedule_task_desc").innerHTML=obj._delegate._document.data.value.mapValue.fields.desc.stringValue;
-    document.getElementById("reschedule_dt").innerHTML=obj._delegate._document.data.value.mapValue.fields.due_date_time.stringValue;
-    document.getElementById("reschedule_confirm_button").innerHTML=`<button onclick="reschedule_confirm('${id}')">Confirm</button>`;
-}
+
 function reschedule_confirm(id){
     d = new Date(document.getElementById("reschedule_dt_input").value);
     if (isNaN(d.getTime())){
@@ -103,8 +106,26 @@ function getalltasks(){
         console.log(alltasks);
         alltasks.forEach((item)=>{console.log(item.desc);})
         document.getElementById("all").childNodes[5].innerHTML="";
-        alltasks.forEach((item)=>{document.getElementById("all").childNodes[5].innerHTML+=(`<div id="${item.id}_div">${alltasks.indexOf(item)+1}.&nbsp;${item._delegate._document.data.value.mapValue.fields.desc.stringValue}<div>due at ${item._delegate._document.data.value.mapValue.fields.due_date_time.stringValue}</div><button id="${item.id}_reschedule" onclick="reschedule('${item.id}')">Reschedule this task</button><br></div><br>`);});
-    }).catch((error)=>{alert("Error has occurred.... Contact Mono");console.log(error)});
+        alltasks.forEach((item)=>{document.getElementById("all").childNodes[5].innerHTML+=(`<div id="${item.id}_div">${alltasks.indexOf(item)+1}.&nbsp;${item._delegate._document.data.value.mapValue.fields.desc.stringValue}<div>due at ${item._delegate._document.data.value.mapValue.fields.due_date_time.stringValue}</div><button onclick="reschedule('${item.id}')">Reschedule this task</button><button onclick="moveToComplete('${item.id}')">Mark as complete</button><button onclick="moveToMissed('${item.id}')">Mark as missed</button><br></div><br>`);});
+        //addToDivAll();
+    }).catch((error)=>{alert("Error has occurred.... Contact Mono")});
+    
+    // 
+    // db.collection("alltasks").get().then(function(querySnapshot) {      
+    //     x = querySnapshot.docs;
+    //     x.forEach((doc) => {    var docRef = db.collection("cities").doc();
+    // })
+    // });
+    // docRef.get().then((doc) => {
+    //     if (doc.exists) {
+    //         console.log("Document data:", doc.data());
+    //     } else {
+    //         // doc.data() will be undefined in this case
+    //         console.log("No such document!");
+    //     }
+    // }).catch((error) => {
+    //     console.log("Error getting document:", error);
+    // });
 }
 
 function getmissedtasks(){
@@ -113,13 +134,14 @@ function getmissedtasks(){
         console.log(x);
         document.getElementById("body").style.display="block";        
         document.getElementById("loading").style.display="none";
-        x.forEach((it) => {docRef = db.collection("missedtasks").doc(it.id).get().then((doc)=>{missedtasks.concat[doc.data()];missedtasks[x.indexOf(it)].id=it.id})});
+        x.forEach((it) => {docRef = db.collection("missedtasks").doc(it.id).get().then((doc)=>{missedtasks[x.indexOf(it)]=doc.data();Object.defineProperty(x[x.indexOf(it)], "id", {value: it.id})})});
         console.log(x);
         missedtasks=x;
         console.log(missedtasks);
         missedtasks.forEach((item)=>{console.log(item.desc);})
         document.getElementById("missed").innerHTML="";
-        missedtasks.forEach((item)=>{document.getElementById("missed").innerHTML+=(`<div id="${item.id}_div">${missedtasks.indexOf(item)+1}.&nbsp;${item._delegate._document.data.value.mapValue.fields.desc.stringValue} was due at ${item._delegate._document.data.value.mapValue.fields.due_date_time.stringValue}<br><button id="${item.id}_reschedule" onclick="rescheduleToAll(${item.id})">Reschedule this task</button><br></div>`);});
+        missedtasks.forEach((item)=>{document.getElementById("missed").innerHTML+=(`<div id="${item.id}_div">${missedtasks.indexOf(item)+1}.&nbsp;${item._delegate._document.data.value.mapValue.fields.desc.stringValue} was due at ${item._delegate._document.data.value.mapValue.fields.due_date_time.stringValue}<br><button id="${item.id}_reschedule" onclick="reschedule(${item.id})">Reschedule and move to pending</button><br></div>`);});
+        //addToDivMissed();
     });
 }
 
@@ -129,7 +151,7 @@ function getcompletedtasks(){
         console.log(x);
         document.getElementById("body").style.display="block";        
         document.getElementById("loading").style.display="none";
-        x.forEach((it) => {docRef = db.collection("completedtasks").doc(it.id).get().then((doc)=>{completedtasks.concat[doc.data()];completedtasks[x.indexOf(it)].id=it.id})});
+        x.forEach((it) => {docRef = db.collection("completedtasks").doc(it.id).get().then((doc)=>{completedtasks[x.indexOf(it)]=doc.data();Object.defineProperty(x[x.indexOf(it)], "id", {value: it.id})})});
         console.log(x);
         completedtasks=x;
         console.log(completedtasks);
