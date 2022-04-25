@@ -31,18 +31,8 @@ getcompletedtasks();
 
 
 
-var docRef = db.collection("alltasks");
+//var docRef = db.collection("alltasks");
 
-// docRef.get().then((doc) => {
-//     if (doc.exists) {
-//         console.log("Document data:", doc.data());
-//     } else {
-//         // doc.data() will be undefined in this case
-//         console.log("No such document!");
-//     }
-// }).catch((error) => {
-//     console.log("Error getting document:", error);
-// });
 function moveToComplete(id){
     obj = alltasks.find(x=>(x.id===id));
     document.getElementById("body").style.display="none";
@@ -78,7 +68,7 @@ function moveToAll(id){
             due_date_time: obj._delegate._document.data.value.mapValue.fields.due_date_time.stringValue 
         }).then(()=>{db.collection("missedtasks").doc(`${id}`).delete().then(()=>{getalltasks();getmissedtasks();document.getElementById("loading").style.display="none";document.getElementById("body").style.display="block";return;})})  
     }
-    else{    alert("Enter valid date");
+    else{alert("Enter valid date");
 }
 }
 
@@ -138,22 +128,7 @@ function getalltasks(){
         //addToDivAll();
     }).catch((error)=>{alert("Error has occurred.... Contact Mono")});
     
-    // 
-    // db.collection("alltasks").get().then(function(querySnapshot) {      
-    //     x = querySnapshot.docs;
-    //     x.forEach((doc) => {    var docRef = db.collection("cities").doc();
-    // })
-    // });
-    // docRef.get().then((doc) => {
-    //     if (doc.exists) {
-    //         console.log("Document data:", doc.data());
-    //     } else {
-    //         // doc.data() will be undefined in this case
-    //         console.log("No such document!");
-    //     }
-    // }).catch((error) => {
-    //     console.log("Error getting document:", error);
-    // });
+
 }
 
 function getmissedtasks(){
@@ -190,75 +165,14 @@ function getcompletedtasks(){
     });
 }
 
-function addToDivAll(){
-    console.log(alltasks);
-    let l = alltasks.length;
-    for (let index = 0; index < l; index++) {
-        console.log(alltasks[index]._delegate._document.data.value.mapValue.fields.desc.stringValue);
-        
-    }
-    //alltasks.forEach((y)=>{console.log(y.desc);})
-}
-
-function addToDivMissed(){
-    console.log(missedtasks);
-    let l = missedtasks.length;
-    for (let index = 0; index < l; index++) {
-        console.log(missedtasks[index]._delegate._document.data.value.mapValue.fields.desc.stringValue);
-        
-    }
-    //alltasks.forEach((y)=>{console.log(y.desc);})
-}
-
-function addToDivCompleted(){
-    console.log(completedtasks);
-    let l = completedtasks.length;
-    for (let index = 0; index < l; index++) {
-        console.log(completedtasks[index]._delegate._document.data.value.mapValue.fields.desc.stringValue);
-        
-    }
-    //alltasks.forEach((y)=>{console.log(y.desc);})
-}
-
 function toggle(open){
     document.getElementById("all").style.display="none";
     document.getElementById("completed").style.display="none";
     document.getElementById("missed").style.display="none";
     document.getElementById(open).style.display="block";
 }
-// function writeUserData(description, date_time) {
-//     db.collection(`alltasks/`).add({
-//         desc: description,
-//         due_date_time: date_time
-//     }).then((docRef)=>{
-//         console.log("written with id: ", docRef.id);
-//         n++;
-//         alltasks.concat([docRef.id]);
-//     })
-//     .catch((error)=>{console.log("error while writing: ", error);});
-//   }
+
 function addTaskToDB(){
-    // d = new Date(document.getElementById("add").childNodes[1].value);
-    // if (isNaN(d.getTime())){
-    //     console.log(1);
-    // }
-    // else{
-    //     console.log((new Date).toLocaleDateString())
-    //     if (document.getElementById("task_input").value!="" && (d>(new Date) || d.getHours()>(new Date).getHours() || d.getMinutes()>(new Date).getMinutes())){
-    //         alltasks.push(new Task(document.getElementById("task_input").value, d));
-    //         console.log(alltasks.length);        
-    //         writeUserData(`${(new Date).toUTCString()}`, `${document.getElementById("task_input").value}`, `${d}`);
-    //         document.getElementById("add").close();
-    //         document.getElementById("task_input").value="";
-    //         document.getElementById("dt_input").value="";
-    //         document.getElementById("dialog_error").innerHTML="";
-    //         document.getElementById("body").style.display="block";
-    //         document.getElementById("all").innerHTML = `You have ${alltasks.length} pending task(s)<br>`+document.getElementById("all").innerHTML.slice(33);
-    //         return 0;
-    //     }
-    //     console.log(2);
-    // }
-    // document.getElementById("dialog_error").innerHTML="Invalid Data. Enter again";
     d = new Date(document.getElementById("add").childNodes[1].value);
     console.log(d);
     if (isNaN(d.getTime())){
@@ -307,24 +221,113 @@ function addTaskDialog(){
 
 
 
-class Task {
-    constructor(desc, date_time) {
-        this.desc = desc;
-        this.due_date_time = date_time;
-        this.category = "all";
-        document.getElementById("all_tasks").innerHTML += `<div>${this.desc} <br>due at ${this.due_date_time.toLocaleDateString()} ${this.due_date_time.toLocaleTimeString('en-IN')}<button type="button">Add to Completed</button><button onclick=${this.reschedule()} >Reschedule</button></div>`;
-        console.log(alltasks.length);        
-    }
+// class Task {
+//     constructor(desc, date_time) {
+//         this.desc = desc;
+//         this.due_date_time = date_time;
+//         this.category = "all";
+//         document.getElementById("all_tasks").innerHTML += `<div>${this.desc} <br>due at ${this.due_date_time.toLocaleDateString()} ${this.due_date_time.toLocaleTimeString('en-IN')}<button type="button">Add to Completed</button><button onclick=${this.reschedule()} >Reschedule</button></div>`;
+//         console.log(alltasks.length);        
+//     }
 
-    reschedule(){
-        console.log(1);
-    }
+//     reschedule(){
+//         console.log(1);
+//     }
     
-    completed(){
-        //remove task from alltasks array
-        alltasks = alltasks.filter(function(ele){
-            return ele != this;
-        });
-        completedtasks.push(this);
-    }
-}
+//     completed(){
+//         //remove task from alltasks array
+//         alltasks = alltasks.filter(function(ele){
+//             return ele != this;
+//         });
+//         completedtasks.push(this);
+//     }
+// }
+
+//function addToDivAll(){
+    //     console.log(alltasks);
+    //     let l = alltasks.length;
+    //     for (let index = 0; index < l; index++) {
+    //         console.log(alltasks[index]._delegate._document.data.value.mapValue.fields.desc.stringValue);
+            
+    //     }
+    //     //alltasks.forEach((y)=>{console.log(y.desc);})
+    // }
+    
+    // function addToDivMissed(){
+    //     console.log(missedtasks);
+    //     let l = missedtasks.length;
+    //     for (let index = 0; index < l; index++) {
+    //         console.log(missedtasks[index]._delegate._document.data.value.mapValue.fields.desc.stringValue);
+            
+    //     }
+    //     //alltasks.forEach((y)=>{console.log(y.desc);})
+    // }
+    
+    // function addToDivCompleted(){
+    //     console.log(completedtasks);
+    //     let l = completedtasks.length;
+    //     for (let index = 0; index < l; index++) {
+    //         console.log(completedtasks[index]._delegate._document.data.value.mapValue.fields.desc.stringValue);
+            
+    //     }
+    //     //alltasks.forEach((y)=>{console.log(y.desc);})
+    // }
+    // d = new Date(document.getElementById("add").childNodes[1].value);
+    // if (isNaN(d.getTime())){
+    //     console.log(1);
+    // }
+    // else{
+    //     console.log((new Date).toLocaleDateString())
+    //     if (document.getElementById("task_input").value!="" && (d>(new Date) || d.getHours()>(new Date).getHours() || d.getMinutes()>(new Date).getMinutes())){
+    //         alltasks.push(new Task(document.getElementById("task_input").value, d));
+    //         console.log(alltasks.length);        
+    //         writeUserData(`${(new Date).toUTCString()}`, `${document.getElementById("task_input").value}`, `${d}`);
+    //         document.getElementById("add").close();
+    //         document.getElementById("task_input").value="";
+    //         document.getElementById("dt_input").value="";
+    //         document.getElementById("dialog_error").innerHTML="";
+    //         document.getElementById("body").style.display="block";
+    //         document.getElementById("all").innerHTML = `You have ${alltasks.length} pending task(s)<br>`+document.getElementById("all").innerHTML.slice(33);
+    //         return 0;
+    //     }
+    //     console.log(2);
+    // }
+    // document.getElementById("dialog_error").innerHTML="Invalid Data. Enter again";
+    // function writeUserData(description, date_time) {
+//     db.collection(`alltasks/`).add({
+//         desc: description,
+//         due_date_time: date_time
+//     }).then((docRef)=>{
+//         console.log("written with id: ", docRef.id);
+//         n++;
+//         alltasks.concat([docRef.id]);
+//     })
+//     .catch((error)=>{console.log("error while writing: ", error);});
+//   }
+    // 
+    // db.collection("alltasks").get().then(function(querySnapshot) {      
+    //     x = querySnapshot.docs;
+    //     x.forEach((doc) => {    var docRef = db.collection("cities").doc();
+    // })
+    // });
+    // docRef.get().then((doc) => {
+    //     if (doc.exists) {
+    //         console.log("Document data:", doc.data());
+    //     } else {
+    //         // doc.data() will be undefined in this case
+    //         console.log("No such document!");
+    //     }
+    // }).catch((error) => {
+    //     console.log("Error getting document:", error);
+    // });
+    
+// docRef.get().then((doc) => {
+//     if (doc.exists) {
+//         console.log("Document data:", doc.data());
+//     } else {
+//         // doc.data() will be undefined in this case
+//         console.log("No such document!");
+//     }
+// }).catch((error) => {
+//     console.log("Error getting document:", error);
+// });
