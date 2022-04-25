@@ -104,8 +104,8 @@ function getalltasks(){
             document.getElementById("all_tasks").innerHTML = "You have no pending tasks!!";
         }
         else {
-            document.getElementById("all").childNodes[5].innerHTML="";
-            alltasks.forEach((item)=>{document.getElementById("all").childNodes[5].innerHTML+=(`<div id="${item.id}_div">${alltasks.indexOf(item)+1}.&nbsp;${item._delegate._document.data.value.mapValue.fields.desc.stringValue}<div>due at ${item._delegate._document.data.value.mapValue.fields.due_date_time.stringValue}</div><button onclick="reschedule('${item.id}')">Reschedule this task</button><button onclick="moveToComplete('${item.id}')">Mark as complete</button><button onclick="moveToMissed('${item.id}')">Mark as missed</button><br></div><br>`);});
+            document.getElementById("all_tasks").innerHTML="";
+            alltasks.forEach((item)=>{document.getElementById("all_tasks").innerHTML+=(`<div id="${item.id}_div">${alltasks.indexOf(item)+1}.&nbsp;${item._delegate._document.data.value.mapValue.fields.desc.stringValue}<div>due at ${item._delegate._document.data.value.mapValue.fields.due_date_time.stringValue}</div><button onclick="reschedule('${item.id}')">Reschedule this task</button><button onclick="moveToComplete('${item.id}')">Mark as complete</button><button onclick="moveToMissed('${item.id}')">Mark as missed</button><br></div><br>`);});
         }
         document.getElementById("body").style.display="block";
         document.getElementById("loading").style.display="none";
