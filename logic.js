@@ -125,7 +125,7 @@ function getalltasks(){
         alltasks.forEach((item)=>{console.log(item.desc);})
         document.getElementById("all").childNodes[5].innerHTML="";
         alltasks.forEach((item)=>{document.getElementById("all").childNodes[5].innerHTML+=(`<div id="${item.id}_div">${alltasks.indexOf(item)+1}.&nbsp;${item._delegate._document.data.value.mapValue.fields.desc.stringValue}<div>due at ${item._delegate._document.data.value.mapValue.fields.due_date_time.stringValue}</div><button onclick="reschedule('${item.id}')">Reschedule this task</button><button onclick="moveToComplete('${item.id}')">Mark as complete</button><button onclick="moveToMissed('${item.id}')">Mark as missed</button><br></div><br>`);});
-        //addToDivAll();
+        document.getElementById("body").style.display="block";document.getElementById("loading").style.display="none";
     }).catch((error)=>{alert("Error has occurred.... Contact Mono")});
     
 
@@ -185,18 +185,16 @@ function addTaskToDB(){
             //console.log(alltasks.length);
             document.getElementById("add").close();
             document.getElementById("loading").style.display="block";        
-            db.collection(`alltasks/`).add({
+            db.collection(`alltasks`).doc(`${(new Date).toLocaleString().replaceAll("/","-")}`).set({
                 desc: `${document.getElementById("task_input").value}`,
                 due_date_time: `${d.toLocaleString()}`
             }).then((docRef)=>{
-                console.log("written with id: ", docRef.id);
                 n++;
-                alltasks = alltasks.concat(`${[docRef.id]}`);
                 console.log(alltasks);
                 console.log(document.getElementById("all").innerHTML);
                 document.getElementById("body").style.display="none";
                 document.getElementById("loading").style.display="block";
-                getalltasks().then(() =>{document.getElementById("body").style.display="block";document.getElementById("loading").style.display="none";});
+                getalltasks();
                 //document.getElementById("all").innerHTML = `You have ${n} pending task(s)<br>`+document.getElementById("all").innerHTML.slice(33)+`<br><br><div id=${docRef.id}>${alltasks.findIndex(x => x===docRef.id) + 1}.&nbsp;${document.getElementById("task_input").value} due&nbsp;at&nbsp;${d.toUTCString()}</div>`;
                 console.log(document.getElementById("all").innerHTML);
                 document.getElementById("task_input").value="";
