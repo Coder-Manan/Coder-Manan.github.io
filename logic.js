@@ -21,7 +21,7 @@ var missedtasks = [];
 getalltasks();
 getmissedtasks();
 getcompletedtasks();
-
+document.getElementById("body").style.display="none";
 function moveToComplete(id){
     obj = alltasks.find(x=>(x.id===id));
     document.getElementById("body").style.display="none";
@@ -184,4 +184,12 @@ function addTaskDialog(){
     document.getElementById("dialog").style.display="block";
     document.getElementById("add").show();
 
+}
+
+//auth
+function register(){
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    console.log(email);
+    console.log(password);
 }
