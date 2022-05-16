@@ -12,6 +12,7 @@ const firebaseConfig = {
 };
 const app = firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+const auth = firebase.auth();
 //const ref = db.ref;
 var alltasks = [];
 var completedtasks = [];
@@ -190,6 +191,39 @@ function addTaskDialog(){
 function register(){
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
-    console.log(email);
-    console.log(password);
+    if (email == "" || password == ""){
+        alert("Enter valid data");
+        return;
+    }
+    let l = email.length;
+    let cat = 0;
+    let cdot = 0;
+    let c = 0;
+    for (let i = 0; i < l - 1; i++) {
+        c = email.charCodeAt(i);
+        if (c == 46 && email.charCodeAt(i+1) != 46){
+            cdot++;
+        }
+        else if(c == 64 && cat == 0 && email.charCodeAt(i+1) != 64){
+            cat = 1;
+        }
+        else if(c >= 33 && c <= 126){
+            continue;
+        }
+        else{
+            alert("Invalid email-id");
+            return;
+        }
+    }
+    c = email.charCodeAt(l - 1);
+    console.log(cat);
+    if (c >= 33 && c <= 126 && c != 46 && c != 64 && cat != 0){
+        //create user
+        auth.createUserWithEmailAndPassword(email, password)
+        .then((res)=>{console.log(res.user);})
+        .catch((error)=>{alert("Error has occurred... Contact Mono");console.log(error);})
+    }
+    else{
+        alert("Invalid email-id");
+    }
 }
