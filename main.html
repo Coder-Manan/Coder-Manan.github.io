@@ -44,8 +44,18 @@
         <input placeholder="Password" id="password_login" type="password"/>
       </div>
       <button class="submit" onclick="login()">Submit</button><br>
+      <button class="forgot_password" onclick="forgot_password()">Forgot Password</button><br>
       <button onclick="goToSignUp()">Signup - create account</button>
-    </div></div>
+    </div>
+
+    <div id="reset_password" style="display: none;">
+      <div>
+        <label>Enter email id</label>
+        <input placeholder="Email" id="email_reset_password" type="email"/>
+      </div>
+      <button onclick="reset_password()">Send password reset link</button>
+    </div>
+  </div>
     <div id = "test">
     <div id="dialog">
       <dialog id="reschedule">

@@ -351,3 +351,33 @@ function logout(){
     })
     .catch((error)=>{alert("Error");console.log(error);})
 }
+
+function forgot_password(){
+    document.getElementById("login").style.display="none";
+    document.getElementById("reset_password").style.display="block";
+}
+
+function reset_password(){
+    const email = document.getElementById("email_reset_password").value;
+    document.getElementById("loading").style.display="block";
+    document.getElementById("reset_password").style.display="none";
+    auth.sendPasswordResetEmail(email)
+    .then(()=>{
+        alert("Email sent successfully");
+        document.getElementById("email_reset_password").value = "";
+        document.getElementById("login").style.display="block";
+    })
+    .catch((error)=>{
+        if (error.toString().slice(0,83) == "FirebaseError: Firebase: The email address is badly formatted. (auth/invalid-email)" || 
+        error.toString().slice(0,136) == "FirebaseError: Firebase: There is no user record corresponding to this identifier. The user may have been deleted. (auth/user-not-found)"){
+            alert("Invalid email-id");
+        }
+        else{
+            alert("Error");
+            console.log(error);
+        }
+        document.getElementById("reset_password").style.display="block";
+    })
+    document.getElementById("loading").style.display="none";
+    
+}
