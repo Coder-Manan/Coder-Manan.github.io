@@ -20,29 +20,29 @@ var completedtasks = [];
 var missedtasks = [];
 //document.getElementById("all").innerHTML = `<h1>All Tasks Tab</h1><br>`+document.getElementById("all").innerHTML;
 document.getElementById("test").style.display="none";
-getalltasks();
-getmissedtasks();
-getcompletedtasks();
+// getalltasks();
+// getmissedtasks();
+// getcompletedtasks();
 document.getElementById("body").style.display="none";
 function moveToComplete(id){
     obj = alltasks.find(x=>(x.id===id));
     document.getElementById("body").style.display="none";
     document.getElementById("loading").style.display="block";
-    db.collection("completedtasks").doc(`${id}`).set({
+    db.collection(`data/${uid}/completedtasks`).doc(`${id}`).set({
         desc:obj._delegate._document.data.value.mapValue.fields.desc.stringValue,
         due_date_time:obj._delegate._document.data.value.mapValue.fields.due_date_time.stringValue,
         completed_date_time: (new Date).toLocaleString()
-    }).then(()=>{db.collection("alltasks").doc(`${id}`).delete().then(()=>{document.getElementById("body").style.display="block";document.getElementById("loading").style.display="none";getalltasks();getcompletedtasks();alert("Task marked as complete successfully")}).catch((error)=>{alert("error");console.log(error);})}).catch((error)=>{alert("error");console.log(error);})
+    }).then(()=>{db.collection(`data/${uid}/alltasks`).doc(`${id}`).delete().then(()=>{document.getElementById("body").style.display="block";document.getElementById("loading").style.display="none";getalltasks();getcompletedtasks();alert("Task marked as complete successfully")}).catch((error)=>{alert("error");console.log(error);})}).catch((error)=>{alert("error");console.log(error);})
 };
 
 function moveToMissed(id){
     obj = alltasks.find(x=>(x.id===id));
     document.getElementById("body").style.display="none";
     document.getElementById("loading").style.display="block";
-    db.collection("missedtasks").doc(`${id}`).set({
+    db.collection(`data/${uid}/missedtasks`).doc(`${id}`).set({
         desc:obj._delegate._document.data.value.mapValue.fields.desc.stringValue,
         due_date_time:obj._delegate._document.data.value.mapValue.fields.due_date_time.stringValue,
-    }).then(()=>{db.collection("alltasks").doc(`${id}`).delete().then(()=>{document.getElementById("body").style.display="block";document.getElementById("loading").style.display="none";getalltasks();getmissedtasks();alert("Task marked as missed successfully");}).catch((error)=>{alert("error");console.log(error);})}).catch((error)=>{alert("error");console.log(error);})
+    }).then(()=>{db.collection(`data/${uid}/alltasks`).doc(`${id}`).delete().then(()=>{document.getElementById("body").style.display="block";document.getElementById("loading").style.display="none";getalltasks();getmissedtasks();alert("Task marked as missed successfully");}).catch((error)=>{alert("error");console.log(error);})}).catch((error)=>{alert("error");console.log(error);})
 };
 
 function moveToAll(id){
@@ -57,7 +57,7 @@ function moveToAll(id){
         db.collection("alltasks").doc(`${id}`).set({
             desc: obj._delegate._document.data.value.mapValue.fields.desc.stringValue,
             due_date_time: obj._delegate._document.data.value.mapValue.fields.due_date_time.stringValue 
-        }).then(()=>{db.collection("missedtasks").doc(`${id}`).delete().then(()=>{getalltasks();getmissedtasks();document.getElementById("loading").style.display="none";document.getElementById("body").style.display="block";alert("Task marked as pending successfully");return;})})  
+        }).then(()=>{db.collection(`data/${uid}/missedtasks`).doc(`${id}`).delete().then(()=>{getalltasks();getmissedtasks();document.getElementById("loading").style.display="none";document.getElementById("body").style.display="block";alert("Task marked as pending successfully");return;})})  
     }
     else{alert("Enter valid date");
 }
@@ -89,16 +89,20 @@ function reschedule_confirm(id){
     else if ((d>(new Date) || d.getHours()>(new Date).getHours() || d.getMinutes()>(new Date).getMinutes())){
         document.getElementById("reschedule").close();
         document.getElementById("loading").style.display="block";
-        db.collection("alltasks").doc(`${id}`).update({"due_date_time": d.toLocaleString()}).then(()=>{document.getElementById("loading").style.display="none";document.getElementById("body").style.display="block"}).catch((error)=>{alert("Error has occurred... Contact Mono")});
+        db.collection(`data/${uid}/alltasks`).doc(`${id}`).update({"due_date_time": d.toLocaleString()}).then(()=>{document.getElementById("loading").style.display="none";document.getElementById("body").style.display="block"}).catch((error)=>{alert("Error has occurred... Contact Mono")});
         getalltasks().then(()=>{document.getElementById("loading").style.display="none";document.getElementById("body").style.display="block";return;})
     }
     alert("Enter valid date");
 }
 
 function getalltasks(){
+    if (uid == ""){
+        alert("Error");
+        return;
+    }
     document.getElementById("body").style.display="none";        
     document.getElementById("loading").style.display="block";
-    db.collection("alltasks").get().then(function(querySnapshot) {
+    db.collection(`data/${uid}/alltasks`).get().then(function(querySnapshot) {
         alltasks = querySnapshot.docs;
         document.getElementById("body").style.display="block";        
         document.getElementById("loading").style.display="none";
@@ -117,7 +121,11 @@ function getalltasks(){
 }
 
 function getmissedtasks(){
-    db.collection("missedtasks").get().then(function(querySnapshot) {
+    if (uid == ""){
+        alert("Error");
+        return;
+    }
+    db.collection(`data/${uid}/missedtasks`).get().then(function(querySnapshot) {
         missedtasks = querySnapshot.docs;
         document.getElementById("body").style.display="block";        
         document.getElementById("loading").style.display="none";
@@ -132,7 +140,11 @@ function getmissedtasks(){
 }
 
 function getcompletedtasks(){
-    db.collection("completedtasks").get().then(function(querySnapshot) {
+    if (uid == ""){
+        alert("Error");
+        return;
+    }
+    db.collection(`data/${uid}/completedtasks`).get().then(function(querySnapshot) {
         completedtasks = querySnapshot.docs;
         document.getElementById("body").style.display="block";        
         document.getElementById("loading").style.display="none";
@@ -161,7 +173,7 @@ function addTaskToDB(){
 
             document.getElementById("add").close();
             document.getElementById("loading").style.display="block";        
-            db.collection(`alltasks`).doc(`${(new Date).toLocaleString().replaceAll("/","-")}`).set({
+            db.collection(`data/${uid}/alltasks`).doc(`${(new Date).toLocaleString().replaceAll("/","-")}`).set({
                 desc: `${document.getElementById("task_input").value}`,
                 due_date_time: `${d.toLocaleString()}`
             }).then((docRef)=>{
@@ -189,16 +201,32 @@ function addTaskDialog(){
 }
 
 //auth
+function goToSignUp(){
+    document.getElementById("login").style.display="none";
+    document.getElementById("signup").style.display="block";
+}
+
+function goToLogin(){
+    document.getElementById("signup").style.display="none";
+    document.getElementById("login").style.display="block";
+}
+
 function register(){
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    const re_password = document.getElementById("confirm_password").value;
+    const email = document.getElementById("email_signup").value;
+    const password = document.getElementById("password_signup").value;
+    const re_password = document.getElementById("confirm_password_signup").value;
+    document.getElementById("loading").style.display="block";
+    document.getElementById("auth").style.display="none";
     if (re_password != password){
         alert("Passwords don't match");
+        document.getElementById("loading").style.display="none";
+        document.getElementById("auth").style.display="block";
         return;
     }
     if (email == "" || password == ""){
         alert("Enter valid data");
+        document.getElementById("loading").style.display="none";
+        document.getElementById("auth").style.display="block";
         return;
     }
     let l = email.length;
@@ -218,6 +246,8 @@ function register(){
         }
         else{
             alert("Invalid email-id");
+            document.getElementById("auth").style.display="block";
+            document.getElementById("loading").style.display="none";
             return;
         }
     }
@@ -225,7 +255,16 @@ function register(){
     if (c >= 33 && c <= 126 && c != 46 && c != 64 && cat != 0){
         //create user
         auth.createUserWithEmailAndPassword(email, password)
-        .then((res)=>{console.log(res.user.uid);alert("registered successfully");uid = re.user.uid;})
+        .then((res)=>{
+            console.log(res.user.uid);
+            alert("registered successfully");
+            uid = res.user.uid;
+            getalltasks();
+            getcompletedtasks();
+            getmissedtasks();
+            document.getElementById("loading").style.display="none";
+            document.getElementById("test").style.display="block";
+        })
         .catch((error)=>{
             if (error.toString().slice(0,83) == "FirebaseError: Firebase: The email address is badly formatted. (auth/invalid-email)" ){
                 alert("Invalid email id");
@@ -237,9 +276,48 @@ function register(){
                 alert("User already exists with same email");
             }
             else{alert("Error has occurred... Contact Mono");console.log(error);}
+            document.getElementById("loading").style.display="none";
+            document.getElementById("auth").style.display="block";
         })
     }
     else{
         alert("Invalid email-id");
+        document.getElementById("loading").style.display="none";
+        document.getElementById("auth").style.display="block";
     }
+}
+
+function login(){
+    const email = document.getElementById("email_login").value;
+    const password = document.getElementById("password_login").value;
+    document.getElementById("loading").style.display="block";
+    document.getElementById("auth").style.display="none";
+    auth.signInWithEmailAndPassword(email, password)
+    .then((res) => {
+        console.log(res.user);
+        alert("Logged in successfully");
+        uid = res.user.uid;
+        getalltasks();
+        getcompletedtasks();
+        getmissedtasks();
+        document.getElementById("test").style.display="block";
+
+    })
+    .catch((error)=>{
+        if (error.toString().slice(0,108) == "FirebaseError: Firebase: The password is invalid or the user does not have a password. (auth/wrong-password)"){
+            alert("Wrong password");
+        }
+        else if (error.toString().slice(0,83) == "FirebaseError: Firebase: The email address is badly formatted. (auth/invalid-email)"){
+            alert("Invalid email id");
+        }
+        else if (error.toString().slice(0,136) == "FirebaseError: Firebase: There is no user record corresponding to this identifier. The user may have been deleted. (auth/user-not-found)"){
+            alert("No user exists with given email id");
+        }
+        else{
+            alert("Error");
+            console.log(error);
+        }
+        document.getElementById("auth").style.display="block";
+    })
+    document.getElementById("loading").style.display="none";
 }
