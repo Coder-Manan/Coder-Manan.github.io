@@ -1,6 +1,7 @@
 document.getElementById("all").style.display="none";
 document.getElementById("completed").style.display="none";    
 document.getElementById("missed").style.display="none";
+//import {getAuth} from 'firebase/auth';
 const firebaseConfig = {
     apiKey: "AIzaSyDo-fp_VBZcxFu5yYJEKAS0AhA3vTxElqE",
     authDomain: "js-todo-b1146.firebaseapp.com",
@@ -18,7 +19,7 @@ var alltasks = [];
 var completedtasks = [];
 var missedtasks = [];
 //document.getElementById("all").innerHTML = `<h1>All Tasks Tab</h1><br>`+document.getElementById("all").innerHTML;
-
+document.getElementById("test").style.display="none";
 getalltasks();
 getmissedtasks();
 getcompletedtasks();
@@ -216,12 +217,9 @@ function register(){
         }
     }
     c = email.charCodeAt(l - 1);
-    console.log(cat);
     if (c >= 33 && c <= 126 && c != 46 && c != 64 && cat != 0){
         //create user
-        auth.createUserWithEmailAndPassword(email, password)
-        .then((res)=>{console.log(res.user);})
-        .catch((error)=>{alert("Error has occurred... Contact Mono");console.log(error);})
+        auth.createUserWithEmailAndPassword(email, password).then((res)=>{console.log(res.user.uid);alert("registered successfully")}).catch((error)=>{alert("Error has occurred... Contact Mono");console.log(error);})
     }
     else{
         alert("Invalid email-id");
