@@ -14,7 +14,7 @@ const firebaseConfig = {
 const app = firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
-//const ref = db.ref;
+let uid = "";
 var alltasks = [];
 var completedtasks = [];
 var missedtasks = [];
@@ -192,6 +192,11 @@ function addTaskDialog(){
 function register(){
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
+    const re_password = document.getElementById("confirm_password").value;
+    if (re_password != password){
+        alert("Passwords don't match");
+        return;
+    }
     if (email == "" || password == ""){
         alert("Enter valid data");
         return;
@@ -219,7 +224,20 @@ function register(){
     c = email.charCodeAt(l - 1);
     if (c >= 33 && c <= 126 && c != 46 && c != 64 && cat != 0){
         //create user
-        auth.createUserWithEmailAndPassword(email, password).then((res)=>{console.log(res.user.uid);alert("registered successfully")}).catch((error)=>{alert("Error has occurred... Contact Mono");console.log(error);})
+        auth.createUserWithEmailAndPassword(email, password)
+        .then((res)=>{console.log(res.user.uid);alert("registered successfully");uid = re.user.uid;})
+        .catch((error)=>{
+            if (error.toString().slice(0,83) == "FirebaseError: Firebase: The email address is badly formatted. (auth/invalid-email)" ){
+                alert("Invalid email id");
+            }
+            else if (error.toString().slice(0,86) == "FirebaseError: Firebase: Password should be at least 6 characters (auth/weak-password)"){
+                alert("Password should be of min length 6");
+            }
+            else if (error.toString().slice(0,108) == "FirebaseError: Firebase: The email address is already in use by another account. (auth/email-already-in-use)"){
+                alert("User already exists with same email");
+            }
+            else{alert("Error has occurred... Contact Mono");console.log(error);}
+        })
     }
     else{
         alert("Invalid email-id");
