@@ -49,6 +49,7 @@ function moveToAll(id){
     d = new Date(document.getElementById("reschedule_dt_input").value);
     if (isNaN(d.getTime())){
         console.log(1);
+        alert("Error");
     }
     else if ((d>(new Date) || d.getHours()>(new Date).getHours() || d.getMinutes()>(new Date).getMinutes())){
         obj = missedtasks.find(x=>(x.id===id));
@@ -215,6 +216,7 @@ function register(){
     const email = document.getElementById("email_signup").value;
     const password = document.getElementById("password_signup").value;
     const re_password = document.getElementById("confirm_password_signup").value;
+    const name = document.getElementById("name").value;
     document.getElementById("loading").style.display="block";
     document.getElementById("auth").style.display="none";
     if (re_password != password){
@@ -223,7 +225,7 @@ function register(){
         document.getElementById("auth").style.display="block";
         return;
     }
-    if (email == "" || password == ""){
+    if (email == "" || password == "" || name == ""){
         alert("Enter valid data");
         document.getElementById("loading").style.display="none";
         document.getElementById("auth").style.display="block";
@@ -256,14 +258,21 @@ function register(){
         //create user
         auth.createUserWithEmailAndPassword(email, password)
         .then((res)=>{
-            console.log(res.user.uid);
+            document.getElementById("email_signup").value = "";
+            document.getElementById("password_signup").value = "";
+            document.getElementById("confirm_password_signup").value = "";
+            document.getElementById("name").value = "";
             alert("registered successfully");
             uid = res.user.uid;
+            db.collection(`data`).doc(`${uid}`).set({Name: `${name}`}).then(()=>{
             getalltasks();
             getcompletedtasks();
             getmissedtasks();
+            document.getElementById("test").innerHTML = `<div>${name}'s Dashboard</div>` + document.getElementById("test").innerHTML;
             document.getElementById("loading").style.display="none";
             document.getElementById("test").style.display="block";
+        })
+            .catch((error)=>{alert("Error");console.log(error);})
         })
         .catch((error)=>{
             if (error.toString().slice(0,83) == "FirebaseError: Firebase: The email address is badly formatted. (auth/invalid-email)" ){
@@ -290,16 +299,26 @@ function register(){
 function login(){
     const email = document.getElementById("email_login").value;
     const password = document.getElementById("password_login").value;
+    if (password == "" || email == ""){
+        alert("Please fill both fields");
+        return;
+    }
     document.getElementById("loading").style.display="block";
     document.getElementById("auth").style.display="none";
     auth.signInWithEmailAndPassword(email, password)
     .then((res) => {
-        console.log(res.user);
+        document.getElementById("email_login").value = "";
+        document.getElementById("password_login").value = "";
         alert("Logged in successfully");
         uid = res.user.uid;
         getalltasks();
         getcompletedtasks();
         getmissedtasks();
+        db.collection(`data`).doc(`${uid}`).get()
+        .then((querySnapshot)=>{document.getElementById("test").innerHTML = `<div>${querySnapshot._delegate._document.data.value.mapValue.fields.Name.stringValue}'s Dashboard</div>` + document.getElementById("test").innerHTML;})
+        .catch((error)=>{alert("Error");console.log(error);});
+        //
+        document.getElementById("loading").style.display="none";
         document.getElementById("test").style.display="block";
 
     })
@@ -319,5 +338,16 @@ function login(){
         }
         document.getElementById("auth").style.display="block";
     })
-    document.getElementById("loading").style.display="none";
+}
+
+function logout(){
+    document.getElementById("loading").style.display="block";
+    document.getElementById("test").style.display="none";
+    auth.signOut()
+    .then(()=>{
+        alert("Logged out successfully");
+        document.getElementById("loading").style.display="none";
+        document.getElementById("auth").style.display="block";
+    })
+    .catch((error)=>{alert("Error");console.log(error);})
 }
