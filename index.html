@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="./style.css" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="loading" class="centered">
+      <img src="./loading.gif" alt="Please Wait.... Task is getting added">
+      <br>
+      Waiting for response from database......
+    </div>
+    <div id="auth"><div id="signup" class="details">
+      <div>
+        <label>Email</label>
+        <input placeholder="Email" id="email_signup" type="email"/>
+      </div>
+      <div>
+        <label>Password</label>
+        <input placeholder="Password" id="password_signup" type="password"/>
+      </div>
+      <div>
+        <label>Confirm Password</label>
+        <input placeholder="Password" id="confirm_password_signup" type="password"/>
+      </div>
+      <div>
+        <label>Name</label>
+        <input type="text" id="name"/>
+      </div>
+      <button class="submit" onclick="register()">Submit</button><br>
+      <button onclick="goToLogin()">Login - Existing User</button>
+    </div>
+    
+    <div id="login" style="display: none;">
+      <div>
+        <label>Email</label>
+        <input placeholder="Email" id="email_login" type="email"/>
+      </div>
+      <div>
+        <label>Password</label>
+        <input placeholder="Password" id="password_login" type="password"/>
+      </div>
+      <button class="submit" onclick="login()">Submit</button><br>
+      <button class="forgot_password" onclick="forgot_password()">Forgot Password</button><br>
+      <button onclick="goToSignUp()">Signup - create account</button>
+    </div>
+
+    <div id="reset_password" style="display: none;">
+      <div>
+        <label>Enter email id</label>
+        <input placeholder="Email" id="email_reset_password" type="email"/>
+      </div>
+      <button onclick="reset_password()">Send password reset link</button>
+    </div>
+  </div>
+    <div id = "test">
+    <div id="dialog">
+      <dialog id="reschedule">
+        Select new date and time:
+        <input type="datetime-local" id="reschedule_dt_input" /><br>
+        Task Description: <div id="reschedule_task_desc"></div>
+        Original due date and time:  <div id="reschedule_dt"></div>
+        <div id="reschedule_confirm_button"></div>
+        <br>
+      </dialog>
+      <dialog id="add">
+        Select date and time:
+        <input type="datetime-local" id="dt_input" />
+        Task description:
+        <input type="text" id="task_input" />
+        <button onclick="addTaskToDB()">Add</button>
+        <p id="dialog_error"></p>
+      </dialog>
+    </div>
+    <div id="body">
+      <div class="tabs">
+        <ul>
+          <li><button onclick="toggle('all')">All</button></li>
+          <li><button onclick="toggle('completed')">Completed</button></li>
+          <li><button onclick="toggle('missed')">Missed</button></li>
+        </ul>
+      </div>
+      <div id="all">
+        <h1>All Tasks Tab</h1><br>
+        <button onclick="addTaskDialog()">Add Task</button>
+        <div id="all_tasks"></div>
+      </div>
+      <div id="completed">
+        <h1>Completed Tasks Tab</h1><br>
+        <div id="completed_tasks"></div>
+      </div>
+      <div id="missed">
+        <h1>Missed Tasks Tab</h1><br>
+        <div id="missed_tasks"></div>
+      </div>
+    </div>
+    <div class="developer_info">
+      Made by: <h2>Manan Garg</h2>
+    </div>
+    <div class="logout-btn">
+      <button onclick="logout()">Logout<br></button>
+    </div>
+  </div>
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-auth-compat.js"></script>
+    <script src="./logic.js"></script>
+  </body>
+</html>
