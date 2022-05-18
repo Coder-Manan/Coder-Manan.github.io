@@ -1,7 +1,6 @@
 document.getElementById("all").style.display="none";
 document.getElementById("completed").style.display="none";    
 document.getElementById("missed").style.display="none";
-//import {getAuth} from 'firebase/auth';
 const firebaseConfig = {
     apiKey: "AIzaSyDo-fp_VBZcxFu5yYJEKAS0AhA3vTxElqE",
     authDomain: "js-todo-b1146.firebaseapp.com",
@@ -18,11 +17,7 @@ let uid = "";
 var alltasks = [];
 var completedtasks = [];
 var missedtasks = [];
-//document.getElementById("all").innerHTML = `<h1>All Tasks Tab</h1><br>`+document.getElementById("all").innerHTML;
 document.getElementById("test").style.display="none";
-// getalltasks();
-// getmissedtasks();
-// getcompletedtasks();
 document.getElementById("body").style.display="none";
 function moveToComplete(id){
     obj = alltasks.find(x=>(x.id===id));
@@ -86,6 +81,7 @@ function reschedule_confirm(id){
     d = new Date(document.getElementById("reschedule_dt_input").value);
     if (isNaN(d.getTime())){
         console.log(1);
+        alert("Error");
     }
     else if ((d>(new Date) || d.getHours()>(new Date).getHours() || d.getMinutes()>(new Date).getMinutes())){
         document.getElementById("reschedule").close();
@@ -168,6 +164,7 @@ function addTaskToDB(){
     d = new Date(document.getElementById("add").childNodes[1].value);
     if (isNaN(d.getTime())){
         console.log(1);
+        alert("Error");
     }
     else{
         if (document.getElementById("task_input").value!="" && (d>(new Date) || d.getHours()>(new Date).getHours() || d.getMinutes()>(new Date).getMinutes())){
@@ -262,7 +259,7 @@ function register(){
             document.getElementById("password_signup").value = "";
             document.getElementById("confirm_password_signup").value = "";
             document.getElementById("name").value = "";
-            alert("registered successfully");
+            alert(`Happy to have you here, ${name}`);
             uid = res.user.uid;
             db.collection(`data`).doc(`${uid}`).set({Name: `${name}`}).then(()=>{
             getalltasks();
@@ -317,7 +314,6 @@ function login(){
         db.collection(`data`).doc(`${uid}`).get()
         .then((querySnapshot)=>{document.getElementById("test").innerHTML = `<div>${querySnapshot._delegate._document.data.value.mapValue.fields.Name.stringValue}'s Dashboard</div>` + document.getElementById("test").innerHTML;})
         .catch((error)=>{alert("Error");console.log(error);});
-        //
         document.getElementById("loading").style.display="none";
         document.getElementById("test").style.display="block";
 
