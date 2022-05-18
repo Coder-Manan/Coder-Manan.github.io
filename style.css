@@ -30,3 +30,10 @@
     position: absolute;
     bottom: 0;
 }
+
+.docs {
+    margin: 0 auto;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
