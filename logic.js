@@ -55,7 +55,7 @@ function moveToAll(id){
         obj = missedtasks.find(x=>(x.id===id));
         document.getElementById("reschedule").close();
         document.getElementById("loading").style.display="block";
-        db.collection("alltasks").doc(`${id}`).set({
+        db.collection(`data/${uid}/alltasks`).doc(`${id}`).set({
             desc: obj._delegate._document.data.value.mapValue.fields.desc.stringValue,
             due_date_time: obj._delegate._document.data.value.mapValue.fields.due_date_time.stringValue 
         }).then(()=>{db.collection(`data/${uid}/missedtasks`).doc(`${id}`).delete().then(()=>{getalltasks();getmissedtasks();document.getElementById("loading").style.display="none";document.getElementById("body").style.display="block";alert("Task marked as pending successfully");return;})})  
@@ -135,7 +135,7 @@ function getmissedtasks(){
             document.getElementById("missed_tasks").innerHTML="You have not missed any tasks yet. Keep it up!!";
         }
         else{
-            missedtasks.forEach((item)=>{document.getElementById("missed").innerHTML+=(`<div id="${item.id}_div">${missedtasks.indexOf(item)+1}.&nbsp;${item._delegate._document.data.value.mapValue.fields.desc.stringValue} was due at ${item._delegate._document.data.value.mapValue.fields.due_date_time.stringValue}<br><button id="${item.id}_reschedule" onclick="rescheduleToAll('${item.id}')">Reschedule and move to pending</button><br></div>`);});
+            missedtasks.forEach((item)=>{document.getElementById("missed_tasks").innerHTML+=(`<div id="${item.id}_div">${missedtasks.indexOf(item)+1}.&nbsp;${item._delegate._document.data.value.mapValue.fields.desc.stringValue} was due at ${item._delegate._document.data.value.mapValue.fields.due_date_time.stringValue}<br><button id="${item.id}_reschedule" onclick="rescheduleToAll('${item.id}')">Reschedule and move to pending</button><br></div>`);});
         }    
     });
 }
